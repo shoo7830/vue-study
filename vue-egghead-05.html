@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>play with Vue!</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <style>
+        body {
+            padding: 2em;
+            font-family: sans-serif;
+        }
+
+        #card {
+            border: 2px solid Gray;
+            border-radius: 10px;
+        }
+
+        #card header {
+            display: block;
+            border-radius: 8px 8px 0 0;
+            background: orange;
+            padding: 10px;
+            color: white;
+            font-size: 1.5em;
+        }
+
+        #card div,
+        #card p,
+        form {
+            padding: 1em;
+        }
+
+        #card ul {
+            list-style: none;
+            margin: 0;
+            padding: 0 1em 1em;
+        }
+
+        #card ul li {
+            padding: .25em;
+            border: 1px solid gray;
+            margin: .5em 0;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="card">
+        <header>{{ title }}</header>
+        <form v-on:submit.prevent="addItem">
+            <input id="itemForm" v-model="input">
+            <button v-bind:disabled="buttonDisabled">{{ buttonText }}</button>
+        </form>
+        <ul>
+            <li v-for="(item, index) in items">
+                <span>{{ item }}</span>
+            </li>
+        </ul>
+    </div>
+    <script>
+        var card = new Vue({
+            el: "#card",
+            data: {
+                title: "Dinosaurs",
+                input: "",
+                buttonText: "Add Dinosaur",
+                items: [
+                    "Tyrannosaurus",
+                    "Triceratops",
+                    "Stegosaurus"
+                ]
+            },
+            computed: {
+                buttonDisabled: function() {
+                    return this.input == "";
+                }
+            },
+            watch: {
+                // 1.x 버전에서는 _.debounce가 있었으나 2.x에서 제거 됨.
+                // debounce 속성을 사용하면 입력의 실시간 상태에 액세스할 수 없으므로 “입력” 상태를 감지 할 수 없습니다.
+                // 그러나 Vue에서 디바운스 기능을 분리하면 제한하려는 작업만 디버깅할 수 있으므로 개발할 수있는 기능의 한계가 사라집니다.
+                //  <원래 소스>
+                //  input: _.debounce(function(){
+                //      this.buttonText = this.input !== "" ? "Add " + this.input : "Add Dinosaur";
+                // }, 250)
+
+                input: (function() {
+                    this.buttonText = this.input !== "" ? "Add " + this.input : "Add Dinosaur";
+                })
+            },
+            methods: {
+                addItem: function() {
+                    if (this.input !== '') {
+                        this.items.push(this.input);
+
+                        this.input = '';
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
